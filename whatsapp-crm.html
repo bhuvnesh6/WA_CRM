@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WaCRM – WhatsApp Business CRM</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-base:#f5f6f8;--bg-surface:#fff;--bg-card:#fff;--bg-hover:#f0f3fa;--nav:#0e1a30;
+  --border:#e3e7ee;--accent-1:#2557d6;--accent-2:#1b3f9f;--accent-3:#3b82f6;
+  --accent-grad:#2557d6;--accent-grad-soft:#eaf0fd;
+  --text-h:#0f1a2e;--text-b:#4a566b;--text-dim:#8793a8;
+  --green:#12875a;--red:#d92d20;--yellow:#3b82f6;--purple:#5b34c4;--orange:#1d4ed8;
+  --sidebar-w:240px;--topbar-h:60px;--radius:12px;--radius-sm:8px;--gap:16px;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.06);--shadow-md:0 8px 24px rgba(16,24,40,.14);--shadow-glow:0 2px 6px rgba(37,87,214,.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:14px/1.45 Inter,system-ui,'Segoe UI',Roboto,sans-serif;background:var(--bg-base);color:var(--text-b);height:100vh;display:flex;overflow:hidden}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font:inherit;color:var(--text-h);background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;width:100%;outline:0}
+input:focus,select:focus,textarea:focus{border-color:var(--accent-1);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+textarea{resize:vertical;min-height:70px}
+b{color:var(--text-h)} small{color:var(--text-dim);font-size:12px}
+aside{width:var(--sidebar-w);background:var(--nav);color:#c5cee0;display:flex;flex-direction:column;padding:16px 12px;gap:4px;flex-shrink:0;overflow:auto}
+.logo{display:flex;gap:10px;align-items:center;font-weight:700;font-size:17px;color:#fff;padding:2px 6px 14px}
+.logo i{width:30px;height:30px;border-radius:8px;background:var(--accent-1);color:#fff;display:grid;place-items:center;font-style:normal}
+.sl{font-size:12px;color:#8e9bb5;padding:0 6px 4px}
+.ns{background:#17264a;border:1px solid #26365c;color:#fff;font-size:13px}
+.lbl{font-size:12px;color:#7f8ca8;padding:16px 8px 4px;font-weight:600}
+aside nav button{display:flex;width:100%;gap:10px;align-items:center;padding:9px 10px;border-radius:8px;font-weight:500;text-align:left;color:#c5cee0}
+aside nav button svg{flex-shrink:0}aside nav button span{flex:1}
+aside nav button:hover{background:rgba(255,255,255,.07);color:#fff}
+aside nav button.on{background:var(--accent-1);color:#fff}
+aside nav button.on .bd{background:#fff;color:var(--accent-1)}
+.demo{font-size:12px;color:#7f8ca8;padding:8px 6px;line-height:1.4}
+.av{width:34px;height:34px;border-radius:50%;background:var(--accent-1);color:#fff;display:grid;place-items:center;font-weight:600;font-size:12px;flex-shrink:0}
+.av.lg{width:42px;height:42px;font-size:14px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.bd{background:var(--accent-1);color:#fff;border-radius:99px;font-size:11px;font-style:normal;padding:1px 7px;font-weight:600}
+.sp{flex:1}
+.ib{width:30px;height:30px;border-radius:8px;display:inline-grid;place-items:center;color:var(--text-b);border:1px solid transparent;flex-shrink:0}
+.ib:hover{background:var(--bg-hover);color:var(--text-h)}.ib.red:hover{background:#fee4e2;color:var(--red)}
+.mnu{display:none}
+/* leads */
+.fb{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px;margin-bottom:var(--gap)}
+.fb select,.fb input{width:auto}.fb .fq{flex:1 1 240px}.fr{display:none;gap:6px;align-items:center}
+.who{display:flex;gap:10px;align-items:center}td small{display:block}
+th{background:#fafbfc;white-space:nowrap}tbody tr:hover{background:#fafbfd}
+.act{text-align:right;white-space:nowrap}.act>*{vertical-align:middle}
+.st{display:inline-block;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:600}
+.s-New{background:#e0ebff;color:#1b45b5}.s-Contacted{background:#fef3c7;color:#8a5200}.s-Qualified{background:#ece7fd;color:#5b34c4}.s-Won{background:#d9f5e7;color:#0b6b45}.s-Lost{background:#eceff3;color:#5b6577}
+.tf{padding:10px 16px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text-dim)}
+.empty{text-align:center;padding:48px 16px}.empty p{margin:6px 0 14px}
+.ov.dro{place-items:stretch end;padding:0}
+.dr{background:#fff;width:min(500px,100%);height:100%;display:flex;flex-direction:column;box-shadow:var(--shadow-md)}
+.dh{display:flex;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border)}.dh .cm{flex:1}
+.dbody{padding:18px 20px;overflow:auto;flex:1}.dbody h3{font-size:13.5px;color:var(--text-h);margin:18px 0 8px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:14px}.kv small{display:block;margin-bottom:2px}.kv span{color:var(--text-h);font-weight:500;word-break:break-word}
+.rs{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px}
+.rh{display:flex;gap:8px;align-items:center;margin-bottom:6px}.rh small{margin-left:auto}
+.rt{font-size:11.5px;font-weight:600;border-radius:99px;padding:1px 9px;background:#eceff3;color:#4a566b}.rt.f{background:#e0ebff;color:#1b45b5}.rt.b{background:#fef3c7;color:#8a5200}
+.fv>div{display:grid;grid-template-columns:130px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--border)}.fv dt{color:var(--text-dim);font-size:12.5px}.fv dd{color:var(--text-h);word-break:break-word}
+main{flex:1;display:flex;flex-direction:column;min-width:0}
+.top{height:var(--topbar-h);background:var(--bg-surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0}
+.top h1{font-size:18px;color:var(--text-h)}
+.chip{background:var(--accent-grad-soft);color:var(--accent-2);border-radius:99px;padding:4px 12px;font-weight:600;font-size:12.5px}
+#view{flex:1;overflow:auto;padding:var(--gap)}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:16px}
+.btn{background:var(--accent-grad);color:#fff;border-radius:var(--radius-sm);padding:8px 16px;font-weight:600;box-shadow:var(--shadow-sm)}
+.btn:hover{box-shadow:var(--shadow-glow)}
+.btn.ghost{background:#fff;color:var(--accent-1);border:1px solid var(--border);box-shadow:none}
+.btn.ghost:hover{background:var(--bg-hover)}
+.btn.sm{padding:5px 11px;font-size:12.5px}
+.btn.del{background:#fff;color:var(--red);border:1px solid rgba(220,38,38,.25);box-shadow:none}
+.pill{display:inline-block;border-radius:99px;padding:2px 10px;font-size:11.5px;font-weight:600;background:var(--bg-hover);color:var(--accent-1)}
+.pill.ok{background:rgba(8,145,178,.12);color:var(--green)} .pill.wait{background:#fef3c7;color:#8a5200}
+.row{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--gap)}
+.grid .card{cursor:pointer;transition:.15s}.grid .card:hover{box-shadow:var(--shadow-md)}
+label.f{display:block;font-size:12.5px;font-weight:600;color:var(--text-h);margin:10px 0 4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* inbox */
+.inbox{display:grid;grid-template-columns:310px 1fr;gap:var(--gap);height:calc(100vh - var(--topbar-h) - 32px)}
+.inbox .card{padding:0;display:flex;flex-direction:column;overflow:hidden}
+.ch{padding:12px;border-bottom:1px solid var(--border)}
+#cl{overflow:auto;flex:1}
+.ci{display:flex;gap:10px;align-items:center;padding:11px 12px;cursor:pointer;border-bottom:1px solid var(--border)}
+.ci:hover{background:var(--bg-hover)}.ci.on{background:var(--accent-grad-soft)}
+.cm{flex:1;min-width:0}.cm span{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr{text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.chh{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border)}
+.chh>div:nth-child(2){flex:1}.chh small{display:block}
+.msgs{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:8px;background:var(--bg-base)}
+.b{max-width:68%;padding:8px 12px;border-radius:12px;box-shadow:var(--shadow-sm);font-size:13.5px}
+.b.in{background:#fff;align-self:flex-start;border-top-left-radius:3px}
+.b.out{background:#d6e6fd;align-self:flex-end;border-top-right-radius:3px}
+.b p{color:var(--text-h);margin:2px 0}.b em{display:block;text-align:right;font-size:10.5px;color:var(--text-dim);font-style:normal}
+.mb{display:block;width:100%;text-align:center;padding:7px;margin-top:5px;border-top:1px solid var(--border);color:var(--accent-1);font-weight:600;font-size:13px}
+.mb:hover{background:var(--bg-hover)}
+.sys{align-self:center;background:#fff;border:1px dashed var(--accent-3);color:var(--accent-2);border-radius:99px;padding:3px 12px;font-size:12px}
+.comp{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border)}
+.comp select{width:150px;flex-shrink:0}
+.sim{display:flex;gap:8px;padding:8px 12px;background:var(--bg-hover);align-items:center;font-size:12px}
+/* flows */
+.split{display:grid;grid-template-columns:280px 1fr;gap:var(--gap);align-items:start}
+.fi{position:relative;padding:11px;border-radius:var(--radius-sm);cursor:pointer;border:1px solid transparent}
+.fi:hover{background:var(--bg-hover)}.fi.on{background:var(--accent-grad-soft);border-color:var(--accent-1)}
+.fi small{display:block}
+.sw{position:absolute;right:10px;top:12px}.sw input{display:none}
+.sw span{display:block;width:34px;height:19px;border-radius:99px;background:var(--text-dim);position:relative;transition:.15s}
+.sw span:after{content:'';position:absolute;left:2px;top:2px;width:15px;height:15px;border-radius:50%;background:#fff;transition:.15s}
+.sw input:checked+span{background:var(--accent-1)}.sw input:checked+span:after{left:17px}
+.node{background:#fff;border:1px solid var(--border);border-left:4px solid var(--accent-1);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:var(--shadow-sm);max-width:560px;margin:0 auto}
+.node.t{border-left-color:var(--accent-3);background:linear-gradient(#fff,#f4f9ff)}
+.node h4{display:flex;justify-content:space-between;align-items:center;color:var(--text-h);margin-bottom:8px;font-size:13.5px}
+.cn{width:2px;height:22px;background:var(--accent-1);margin:0 auto;opacity:.4}
+.adds{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:6px}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(11,30,61,.45);display:grid;place-items:center;z-index:9;padding:16px}
+.md{background:#fff;border-radius:var(--radius);width:min(860px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:var(--shadow-md)}
+.mh,.mf{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;gap:10px}
+.mh{border-bottom:1px solid var(--border)}.mf{border-top:1px solid var(--border);justify-content:flex-end}
+.mbd{display:grid;grid-template-columns:1fr 300px;gap:20px;padding:6px 20px 16px;overflow:auto}
+.mbd.one{grid-template-columns:1fr}
+.phone{background:var(--bg-base);border-radius:18px;padding:16px;min-height:280px;position:sticky;top:0;border:1px solid var(--border)}
+.br{display:flex;gap:6px;margin-top:6px}
+pre{background:#0b1e3d;color:#bfdbfe;border-radius:var(--radius-sm);padding:10px;font-size:11.5px;overflow:auto;margin-top:6px}
+details{border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;margin-top:8px}summary{cursor:pointer;color:var(--text-h);font-weight:600;font-size:13px}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--text-h);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);box-shadow:var(--shadow-md);z-index:20}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-bottom:var(--gap)}
+.stats b{font-size:20px;display:block}
+table{width:100%;border-collapse:collapse}th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}th{font-size:12px;color:var(--text-dim);font-weight:600}tr:last-child td{border-bottom:0}
+.tabs{display:flex;gap:6px;align-items:center;margin-bottom:var(--gap);flex-wrap:wrap}.tabs button{padding:8px 16px;border-radius:99px;font-weight:600;background:#fff;border:1px solid var(--border)}.tabs button:hover{background:var(--bg-hover)}.tabs button.on{background:var(--accent-grad);color:#fff;border-color:transparent;box-shadow:var(--shadow-glow)}
+@media(max-width:860px){aside{position:fixed;inset:0 auto 0 0;z-index:15;transform:translateX(-100%);transition:transform .2s}aside.open{transform:none}.mnu{display:inline-grid}.top{padding:0 14px}.inbox,.split,.mbd,.two{grid-template-columns:1fr}.inbox{height:auto}.stats{grid-template-columns:1fr 1fr}}
+</style></head>
+<body>
+<aside id="side"></aside>
+<main><div class="top" id="top"></div><div id="view"></div></main>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,8);
+const tm=()=>new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+const ini=n=>n.split(' ').map(x=>x[0]).join('').slice(0,2);
+const NUMS=[
+ {id:'n1',name:'Sales Desk',phone:'+91 98765 43210',waba:'104928374650291',pid:'109283746501928',color:'#2563eb'},
+ {id:'n2',name:'Support Care',phone:'+91 91234 56780',waba:'104928374650292',pid:'109283746501929',color:'#0ea5e9'},
+ {id:'n3',name:'Marketing',phone:'+91 99887 76655',waba:'104928374650293',pid:'109283746501930',color:'#1e3a8a'}];
+const COLORS=['#2563eb','#0ea5e9','#1e3a8a','#4f46e5','#0891b2'];
+const people=[['Aarav Sharma','+91 98110 22345'],['Priya Nair','+91 98450 11876'],['Rohan Mehta','+91 99200 33412'],['Ananya Iyer','+91 98860 55120'],['Vikram Singh','+91 98730 66541'],['Sneha Patel','+91 97250 44873'],['Kabir Khan','+91 99100 77654'],['Meera Reddy','+91 98490 88231']];
+const CITIES=['Delhi','Mumbai','Bengaluru','Hyderabad','Chennai','Pune'];
+const AGENTS=['Riya (Sales)','Arjun (Support)','Neha (Success)'];
+const DATA={};let cur='n1',view='inbox',S={conv:null,flow:null},T,F;
+const D=(id=cur)=>DATA[id], N=()=>NUMS.find(n=>n.id===cur), conv=()=>D().convs.find(c=>c.id===S.conv)||D().convs[0], fl=()=>D().flows.find(f=>f.id===S.flow);
+
+function tplMsg(t,c){return{d:'out',head:t.header,text:t.body.replace(/\{\{1\}\}/g,c.name.split(' ')[0]),foot:t.footer,btns:t.btns,t:tm()}}
+function seed(n,i){
+ const t1={id:uid(),name:'welcome_menu',cat:'MARKETING',lang:'en_IN',header:'Welcome to '+n.name,body:'Hi {{1}}, thanks for reaching out! How can we help you today?',footer:'Reply STOP to opt out',btns:[{type:'QUICK',text:'Book Demo'},{type:'QUICK',text:'Pricing'},{type:'QUICK',text:'Talk to Agent'}],status:'APPROVED'};
+ const t2={id:uid(),name:'demo_invite',cat:'UTILITY',lang:'en_IN',header:'',body:'Great choice, {{1}}! Download our brochure and share your details so we can schedule your demo.',footer:'',btns:[{type:'URL',text:'View brochure',url:'https://example.in/brochure'}],status:'APPROVED'};
+ const t3={id:uid(),name:'pricing_info',cat:'MARKETING',lang:'en_IN',header:'Plans from ₹999/month',body:'Hi {{1}}, our Starter plan is ₹999/month, Growth is ₹2,499/month and Scale is ₹5,999/month (GST extra).',footer:'Prices valid till month end',btns:[{type:'QUICK',text:'Get a quote'}],status:'APPROVED'};
+ const f1={id:uid(),name:'Demo booking form',fields:[{label:'Full name',type:'text'},{label:'Work email',type:'email'},{label:'Preferred date',type:'date'},{label:'City',type:'select'}],subs:12};
+ const f2={id:uid(),name:'Support ticket form',fields:[{label:'Name',type:'text'},{label:'Order number',type:'text'},{label:'Issue details',type:'text'}],subs:5};
+ const flows=[
+  {id:uid(),name:'Book demo journey',on:true,runs:41,trg:{type:'button',value:'Book Demo'},steps:[{type:'template',v:t2.id},{type:'form',v:f1.id},{type:'tag',v:'Demo requested'}]},
+  {id:uid(),name:'Pricing reply',on:true,runs:28,trg:{type:'button',value:'Pricing'},steps:[{type:'template',v:t3.id},{type:'delay',v:'5'},{type:'text',v:'Want a custom quote? Tap “Get a quote” above or reply here.'}]},
+  {id:uid(),name:'Greeting on “hi”',on:true,runs:96,trg:{type:'keyword',value:'hi'},steps:[{type:'template',v:t1.id}]},
+  {id:uid(),name:'After form submit',on:false,runs:17,trg:{type:'form',value:'any'},steps:[{type:'text',v:'Thanks! Our team will call you within 30 minutes.'},{type:'assign',v:AGENTS[0]}]}];
+ const convs=people.slice(i*2,i*2+4).map((p,k)=>{const c={id:uid(),name:p[0],phone:p[1],tag:['New lead','Hot lead','Customer','Follow-up'][k],unread:k%2?0:k+1,msgs:[]};
+  c.msgs.push({d:'in',text:['Hi, I saw your ad. Can you share more details?','Is the demo available this week?','Need help with my last order','Please send the price list'][k],t:'10:'+(10+k*7)});
+  c.msgs.push(tplMsg(t1,c));return c});
+ return{tpls:[t1,t2,t3],forms:[f1,f2],flows,convs,logs:[],cfg:{appId:'8123456709'+(i+1)+'4',token:'EAAGm0PX4ZCps_demo_'+n.id,ver:'v21.0',vt:'wacrm_'+uid()+uid(),fields:{messages:1,message_template_status_update:1,message_deliveries:1,message_reads:1,messaging_handovers:0},ok:true}}
+}
+NUMS.forEach((n,i)=>DATA[n.id]=seed(n,i));
+
+/* ---------- leads ---------- */
+let LEADS=[],LD;
+const DAY=864e5,L_STATUS=['New','Contacted','Qualified','Won','Lost'],L_SOURCE=['Message','Button click','Form','Manual'];
+const LF={q:'',nid:'all',status:'all',source:'all',range:'all',from:'',to:'',sort:'new'};
+const IC={inbox:'<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/>',form:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>',phone:'<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',code:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',menu:'<line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>',x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'};
+const ic=(k,s=16)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg>`;
+const fDate=t=>new Date(t).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),fTime=t=>new Date(t).toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'}),fDT=t=>fDate(t)+', '+fTime(t);
+const rel=t=>{const m=Math.floor((Date.now()-t)/6e4);return m<1?'Just now':m<60?m+' min ago':m<1440?Math.floor(m/60)+' h ago':m<43200?Math.floor(m/1440)+' d ago':fDate(t)};
+const digits=s=>String(s||'').replace(/\D/g,''),numOf=id=>NUMS.find(n=>n.id===id),findLead=(c,nid=cur)=>LEADS.find(l=>l.nid===nid&&digits(l.phone)===digits(c.phone));
+const so=(list,v)=>list.map(x=>`<option ${x===v?'selected':''}>${x}</option>`).join('');
+
+function seedLeads(n,i){const now=Date.now(),ag=['Unassigned',...AGENTS];
+ const ages=[.1,1.2,3.5,8,17,27],sts=['New','Qualified','Won','Contacted','Lost','Contacted'],srcs=['Message','Form','Form','Button click','Form','Message'],tags=['New lead','Hot lead','Customer','Follow-up','Cold','Follow-up'],
+ msgs=['Hi, I saw your ad. Can you share more details?','Is the demo available this week?','Need help with my last order','Please send the price list','Looking for a bulk order quote','Do you offer GST invoices?'],
+ btn=[0,1,0,1,1,0],btnT=['','Book Demo','','Pricing','Book Demo',''],frm=[0,1,2,0,1,0];
+ for(let k=0;k<6;k++){const p=people[(i*2+k)%8],t0=now-(ages[k]+i*.4)*DAY,email=p[0].toLowerCase().replace(' ','.')+'@example.in',city=CITIES[(i+k)%6],resp=[{type:'message',text:msgs[k],at:t0}];
+  if(btn[k])resp.push({type:'button',text:btnT[k],at:t0+18e4});
+  if(frm[k]===1)resp.push({type:'form',title:'Demo booking form',at:t0+54e4,fields:[{label:'Full name',value:p[0]},{label:'Work email',value:email},{label:'Preferred date',value:new Date(t0+4*DAY).toISOString().slice(0,10)},{label:'City',value:city}]});
+  if(frm[k]===2)resp.push({type:'form',title:'Support ticket form',at:t0+54e4,fields:[{label:'Name',value:p[0]},{label:'Order number',value:'ORD-'+(48210+i*17+k)},{label:'Issue details',value:'Item arrived damaged, need a replacement'}]});
+  LEADS.push({id:uid(),nid:n.id,name:p[0],phone:p[1],email:frm[k]===1?email:'',city:frm[k]===1?city:'',source:srcs[k],status:sts[k],tag:tags[k],assigned:ag[(i+k)%4],notes:k===1?'Wants a demo before month end. Call after 5 pm.':'',created:t0,last:resp[resp.length-1].at+k*36e5,resp})}}
+NUMS.forEach(seedLeads);
+
+function captureLead(c,text,kind,extra,nid=cur){let l=findLead(c,nid),made=!l;
+ if(made){l={id:uid(),nid,name:c.name,phone:c.phone,email:'',city:'',source:kind==='form'?'Form':kind==='button'?'Button click':'Message',status:'New',tag:c.tag||'',assigned:'Unassigned',notes:'',created:Date.now(),last:Date.now(),resp:[]};LEADS.unshift(l)}
+ const r=kind==='form'?{type:'form',title:extra.form,fields:extra.fields,at:Date.now()}:{type:kind==='button'?'button':'message',text,at:Date.now()};
+ l.resp.push(r);l.last=r.at;
+ if(kind==='form'){extra.fields.forEach(f=>{if(/email/i.test(f.label)&&f.value!=='–')l.email=f.value;if(/city/i.test(f.label)&&f.value!=='–')l.city=f.value});if(l.status==='New')l.status='Contacted'}
+ if(made)toast('New lead captured: '+l.name);side()}
+
+function leadsF(){const now=Date.now(),sod=new Date().setHours(0,0,0,0),q=LF.q.trim().toLowerCase(),qd=digits(LF.q);
+ const r=LEADS.filter(l=>{
+  if(LF.nid!=='all'&&l.nid!==LF.nid)return false;if(LF.status!=='all'&&l.status!==LF.status)return false;if(LF.source!=='all'&&l.source!==LF.source)return false;
+  if(q){const hay=(l.name+' '+l.email+' '+l.city+' '+l.tag+' '+l.resp.map(x=>x.text||x.fields.map(f=>f.value).join(' ')).join(' ')).toLowerCase();if(!hay.includes(q)&&!(qd&&digits(l.phone).includes(qd)))return false}
+  const t=l.created;
+  if(LF.range==='today'&&t<sod)return false;if(LF.range==='yesterday'&&(t<sod-DAY||t>=sod))return false;
+  if(LF.range==='7d'&&t<now-7*DAY)return false;if(LF.range==='30d'&&t<now-30*DAY)return false;
+  if(LF.range==='custom'){if(LF.from&&t<new Date(LF.from+'T00:00:00').getTime())return false;if(LF.to&&t>new Date(LF.to+'T23:59:59').getTime())return false}
+  return true});
+ return r.sort({new:(a,b)=>b.created-a.created,old:(a,b)=>a.created-b.created,active:(a,b)=>b.last-a.last,name:(a,b)=>a.name.localeCompare(b.name)}[LF.sort])}
+
+function vLeads(v){const op=(list,all)=>`<option value="all">${all}</option>`+list.map(x=>`<option value="${x[0]}">${esc(x[1])}</option>`).join('');
+ const sel=(k,h,cb)=>`<select onchange="${cb||`LF.${k}=this.value;drawLeads()`}">${h}</select>`;
+ v.innerHTML=`<div class="row"><div><b style="font-size:16px;color:var(--text-h)">Leads</b><br><small>Everyone who messaged you, tapped a button or filled a form.</small></div><div class="br" style="margin:0"><button class="btn ghost" onclick="exportLeads()">Export CSV</button><button class="btn" onclick="editLead()">+ Add lead</button></div></div>
+ <div class="stats" id="ls"></div>
+ <div class="card fb"><input class="fq" placeholder="Search name, phone, email or reply…" value="${esc(LF.q)}" oninput="LF.q=this.value;drawLeads()">
+ ${sel('nid',op(NUMS.map(n=>[n.id,n.name+' · '+n.phone]),'All numbers'))}${sel('status',op(L_STATUS.map(x=>[x,x]),'All statuses'))}${sel('source',op(L_SOURCE.map(x=>[x,x]),'All sources'))}
+ ${sel('range',[['all','Any time'],['today','Today'],['yesterday','Yesterday'],['7d','Last 7 days'],['30d','Last 30 days'],['custom','Custom range']].map(x=>`<option value="${x[0]}">${x[1]}</option>`).join(''),"LF.range=this.value;$('#cr').style.display=LF.range==='custom'?'flex':'none';drawLeads()")}
+ <span class="fr" id="cr" style="display:${LF.range==='custom'?'flex':'none'}"><input type="date" value="${LF.from}" onchange="LF.from=this.value;drawLeads()"><small>to</small><input type="date" value="${LF.to}" onchange="LF.to=this.value;drawLeads()"></span>
+ ${sel('sort',[['new','Newest first'],['old','Oldest first'],['active','Recent activity'],['name','Name A–Z']].map(x=>`<option value="${x[0]}">${x[1]}</option>`).join(''))}
+ <button class="btn ghost sm" onclick="clearLF()">Clear</button></div>
+ <div class="card" style="padding:0;overflow:auto" id="lt"></div>`;
+ v.querySelectorAll('.fb select').forEach(e=>{const k=['nid','status','source','range','sort'][[...v.querySelectorAll('.fb select')].indexOf(e)];e.value=LF[k]});drawLeads()}
+function drawLeads(){const r=leadsF(),c=k=>r.filter(l=>l.status===k).length;
+ $('#ls').innerHTML=[['Leads shown',r.length],['New',c('New')],['Qualified',c('Qualified')],['Won',c('Won')]].map(x=>`<div class="card"><small>${x[0]}</small><b>${x[1]}</b></div>`).join('');
+ $('#lt').innerHTML=r.length?`<table><thead><tr><th>Lead</th><th>WhatsApp number</th><th>Source</th><th>Status</th><th>Assigned to</th><th>Created</th><th>Last activity</th><th></th></tr></thead><tbody>${r.map(l=>{const n=numOf(l.nid);
+  return `<tr><td><div class="who"><div class="av" style="background:${n?n.color:'#2557d6'}">${esc(ini(l.name))}</div><div><b>${esc(l.name)}</b><small>${esc(l.phone)}</small></div></div></td><td>${n?esc(n.name):'–'}<small>${n?esc(n.phone):''}</small></td><td>${l.source}<small>${l.resp.length} response${l.resp.length===1?'':'s'}</small></td><td><span class="st s-${l.status}">${l.status}</span></td><td>${esc(l.assigned)}</td><td>${fDate(l.created)}<small>${fTime(l.created)}</small></td><td title="${fDT(l.last)}">${rel(l.last)}</td><td class="act"><button class="btn ghost sm" onclick="leadDetail('${l.id}')">Details</button> <button class="ib" title="Edit" onclick="editLead('${l.id}')">${ic('edit')}</button><button class="ib red" title="Delete" onclick="delLead('${l.id}')">${ic('trash')}</button></td></tr>`}).join('')}</tbody></table><div class="tf">Showing ${r.length} of ${LEADS.length} leads</div>`
+ :`<div class="empty"><b>${LEADS.length?'No leads match these filters':'No leads yet'}</b><p>${LEADS.length?'Try a different number, status or date range.':'Leads appear here when customers message you. You can also add one manually.'}</p>${LEADS.length?'<button class="btn ghost" onclick="clearLF()">Clear filters</button>':'<button class="btn" onclick="editLead()">+ Add lead</button>'}</div>`}
+function clearLF(){Object.assign(LF,{q:'',nid:'all',status:'all',source:'all',range:'all',from:'',to:'',sort:'new'});render()}
+
+function leadDetail(id){const l=LEADS.find(x=>x.id===id);if(!l)return;const n=numOf(l.nid),kv=(a,b)=>`<div><small>${a}</small><span>${b?esc(b):'–'}</span></div>`;
+ const rs=[...l.resp].sort((a,b)=>b.at-a.at).map(r=>r.type==='form'?`<div class="rs"><div class="rh"><span class="rt f">Form</span><b>${esc(r.title)}</b><small>${fDT(r.at)}</small></div><dl class="fv">${r.fields.map(f=>`<div><dt>${esc(f.label)}</dt><dd>${esc(f.value)}</dd></div>`).join('')}</dl></div>`:`<div class="rs"><div class="rh"><span class="rt ${r.type==='button'?'b':''}">${r.type==='button'?'Button click':'Message'}</span><small>${fDT(r.at)}</small></div><p style="color:var(--text-h)">${esc(r.text)}</p></div>`).join('')||'<p>No responses yet.</p>';
+ drawer(`<div class="dh"><div class="av lg" style="background:${n?n.color:'#2557d6'}">${esc(ini(l.name))}</div><div class="cm"><b style="font-size:16px;color:var(--text-h)">${esc(l.name)}</b><small style="display:block">${esc(l.phone)}</small></div><button class="ib" title="Close" onclick="closeM()">${ic('x')}</button></div>
+ <div class="dbody"><div class="br" style="margin:0 0 16px"><button class="btn sm" onclick="openLeadChat('${l.id}')">Open chat</button><button class="btn ghost sm" onclick="editLead('${l.id}')">Edit</button><button class="btn del sm" onclick="delLead('${l.id}')">Delete</button></div>
+ <div class="kv"><div><small>Status</small><select onchange="setLead('${l.id}','status',this.value)">${so(L_STATUS,l.status)}</select></div><div><small>Assigned to</small><select onchange="setLead('${l.id}','assigned',this.value)">${so(['Unassigned',...AGENTS],l.assigned)}</select></div>${kv('WhatsApp number',n?n.name+' · '+n.phone:'')}${kv('Source',l.source)}${kv('Email',l.email)}${kv('City',l.city)}${kv('Tag',l.tag)}${kv('Created',fDT(l.created))}${kv('Last activity',fDT(l.last))}</div>
+ <h3>Notes</h3><textarea placeholder="Add a note about this lead" oninput="setLead('${l.id}','notes',this.value,1)">${esc(l.notes)}</textarea>
+ <h3>Responses (${l.resp.length})</h3>${rs}</div>`)}
+function setLead(id,k,v,quiet){const l=LEADS.find(x=>x.id===id);l[k]=v;if(view==='leads')drawLeads();side();if(!quiet)toast('Lead updated')}
+function openLeadChat(id){const l=LEADS.find(x=>x.id===id);cur=l.nid;let c=D().convs.find(x=>digits(x.phone)===digits(l.phone));
+ if(!c){c={id:uid(),name:l.name,phone:l.phone,tag:l.tag||l.status,unread:0,msgs:[]};D().convs.unshift(c)}S={conv:c.id,flow:null};view='inbox';closeM();render()}
+function editLead(id){const l=id?LEADS.find(x=>x.id===id):null;
+ LD=l?JSON.parse(JSON.stringify(l)):{id:uid(),nid:LF.nid!=='all'?LF.nid:cur,name:'',phone:'',email:'',city:'',source:'Manual',status:'New',tag:'',assigned:'Unassigned',notes:'',created:Date.now(),last:Date.now(),resp:[]};
+ modal(`<div class="mh"><b>${l?'Edit':'Add'} lead</b><button class="ib" onclick="closeM()">${ic('x')}</button></div><div class="mbd one"><div>
+ <div class="two"><div><label class="f">Full name *</label><input id="ln" value="${esc(LD.name)}"></div><div><label class="f">Phone *</label><input id="lp" value="${esc(LD.phone)}" placeholder="+91 98XXX XXXXX"></div></div>
+ <div class="two"><div><label class="f">Email</label><input id="le" type="email" value="${esc(LD.email)}"></div><div><label class="f">City</label><input id="lc" value="${esc(LD.city)}"></div></div>
+ <div class="two"><div><label class="f">WhatsApp number</label><select id="lnid">${NUMS.map(n=>`<option value="${n.id}" ${n.id===LD.nid?'selected':''}>${esc(n.name)} · ${esc(n.phone)}</option>`).join('')}</select></div><div><label class="f">Status</label><select id="lst">${so(L_STATUS,LD.status)}</select></div></div>
+ <div class="two"><div><label class="f">Source</label><select id="lsr">${so(L_SOURCE,LD.source)}</select></div><div><label class="f">Assigned to</label><select id="la">${so(['Unassigned',...AGENTS],LD.assigned)}</select></div></div>
+ <label class="f">Tag</label><input id="lt" value="${esc(LD.tag)}" placeholder="e.g. Hot lead"><label class="f">Notes</label><textarea id="lno">${esc(LD.notes)}</textarea></div></div>
+ <div class="mf"><button class="btn ghost" onclick="closeM()">Cancel</button><button class="btn" onclick="saveLead(${l?1:0})">${l?'Save changes':'Add lead'}</button></div>`)}
+function saveLead(isEdit){const g=i=>$('#'+i).value.trim(),name=g('ln'),phone=g('lp'),nid=g('lnid');
+ if(!name||digits(phone).length<10)return toast('Enter a name and a valid phone number');
+ if(LEADS.some(x=>x.id!==LD.id&&x.nid===nid&&digits(x.phone)===digits(phone)))return toast('That number already has a lead with this phone');
+ Object.assign(LD,{name,phone,nid,email:g('le'),city:g('lc'),status:g('lst'),source:g('lsr'),assigned:g('la'),tag:g('lt'),notes:g('lno')});
+ if(isEdit)LEADS[LEADS.findIndex(x=>x.id===LD.id)]=LD;else LEADS.unshift(LD);closeM();render();toast(isEdit?'Lead updated':'Lead added')}
+function delLead(id){const l=LEADS.find(x=>x.id===id);modal(`<div class="mh"><b>Delete ${esc(l.name)}?</b><button class="ib" onclick="closeM()">${ic('x')}</button></div><div class="mbd one"><p>This permanently deletes the lead and its ${l.resp.length} saved response${l.resp.length===1?'':'s'}. The WhatsApp chat itself is not affected.</p></div><div class="mf"><button class="btn ghost" onclick="closeM()">Cancel</button><button class="btn del" onclick="confirmLead('${id}')">Delete lead</button></div>`)}
+function confirmLead(id){LEADS=LEADS.filter(x=>x.id!==id);closeM();render();toast('Lead deleted')}
+function exportLeads(){const r=leadsF();if(!r.length)return toast('No leads to export');
+ const h=['Name','Phone','Email','City','WhatsApp number','Source','Status','Tag','Assigned to','Created','Last activity','Notes','Responses'],q=x=>'"'+String(x??'').replace(/"/g,'""')+'"';
+ const rows=r.map(l=>[l.name,l.phone,l.email,l.city,numOf(l.nid)?.phone,l.source,l.status,l.tag,l.assigned,fDT(l.created),fDT(l.last),l.notes,l.resp.map(x=>x.type==='form'?x.title+': '+x.fields.map(f=>f.label+'='+f.value).join('; '):x.text).join(' | ')]);
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+[h,...rows].map(x=>x.map(q).join(',')).join('\n')],{type:'text/csv'}));a.download='leads-'+new Date().toISOString().slice(0,10)+'.csv';a.click();toast('Exported '+r.length+' leads')}
+
+
+/* ---------- chrome ---------- */
+const NAV=[['Workspace',[['inbox','Inbox','inbox'],['leads','Leads','users']]],['Automate',[['flows','Automation','zap'],['tpl','Templates','file'],['forms','Forms','form']]],['Settings',[['nums','WhatsApp numbers','phone'],['api','API & webhooks','code']]]];
+const TITLES=Object.fromEntries(NAV.flatMap(g=>g[1]).map(x=>[x[0],x[1]]));
+const VIEWS={inbox:vInbox,leads:vLeads,flows:vFlows,tpl:vTpl,forms:vForms,nums:vNums,api:vSet};
+function side(){const badge={inbox:D().convs.reduce((a,c)=>a+c.unread,0),leads:LEADS.filter(l=>l.status==='New').length};
+ $('#side').innerHTML=`<div class="logo"><i>W</i>WaCRM</div><label class="sl">Active number</label><select class="ns" onchange="setNum(this.value)">${NUMS.map(x=>`<option value="${x.id}" ${x.id===cur?'selected':''}>${esc(x.name)} · ${esc(x.phone)}</option>`).join('')}</select>
+ <nav>${NAV.map(g=>`<div class="lbl">${g[0]}</div>`+g[1].map(([k,l,i])=>`<button class="${view===k?'on':''}" onclick="go('${k}')">${ic(i,18)}<span>${l}</span>${badge[k]?`<i class="bd">${badge[k]}</i>`:''}</button>`).join('')).join('')}</nav><div class="sp"></div><div class="demo">Demo mode: data stays in this browser and nothing is sent to Meta.</div>`}
+function topbar(){const n=N(),ok=D().cfg.ok,ctx=!['leads','nums'].includes(view);
+ $('#top').innerHTML=`<button class="ib mnu" onclick="$('#side').classList.toggle('open')">${ic('menu',20)}</button><h1>${TITLES[view]}</h1><span class="sp"></span>${ctx?`<span class="chip">${esc(n.name)} · ${esc(n.phone)}</span><span class="pill ${ok?'ok':'wait'}">${ok?'Connected':'Not verified'}</span>`:''}`}
+function go(v){view=v;$('#side').classList.remove('open');render();$('#view').scrollTop=0}
+function setNum(id){cur=id;S={conv:null,flow:null};render()}
+function openInbox(id){cur=id;S={conv:null,flow:null};go('inbox')}
+function addNumber(){go('nums');addNum()}
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2400)}
+function modal(h){closeM();const o=document.createElement('div');o.className='ov';o.id='m';o.innerHTML=`<div class="md">${h}</div>`;document.body.appendChild(o)}
+function drawer(h){closeM();const o=document.createElement('div');o.className='ov dro';o.id='m';o.onclick=e=>{if(e.target===o)closeM()};o.innerHTML=`<div class="dr">${h}</div>`;document.body.appendChild(o)}
+function closeM(){$('#m')?.remove()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+function render(){side();topbar();VIEWS[view]($('#view'))}
+function log(field,value,id=cur){const n=NUMS.find(x=>x.id===id);D(id).logs.unshift({t:tm(),field,body:{object:'whatsapp_business_account',entry:[{id:n.waba,changes:[{field,value:{messaging_product:'whatsapp',metadata:{display_phone_number:n.phone.replace(/\D/g,''),phone_number_id:n.pid},...value}}]}]}});D(id).logs.length=Math.min(D(id).logs.length,8)}
+
+/* ---------- inbox ---------- */
+function vInbox(v){
+ const c=conv();
+ if(!c){v.innerHTML=`<div class="card" style="text-align:center;padding:48px"><b style="font-size:16px">No conversations on ${esc(N().phone)} yet</b><p style="margin:8px 0 16px">Customer messages appear here once the webhook is connected. For this demo, simulate one.</p><button class="btn" onclick="simCustomer()">Simulate a customer message</button></div>`;return}
+ S.conv=c.id;c.unread=0;side();
+ v.innerHTML=`<div class="inbox"><div class="card"><div class="ch" style="display:flex;gap:8px"><input placeholder="Search chats…" oninput="drawList(this.value)"><button class="btn ghost sm" style="white-space:nowrap" title="Simulate a new customer" onclick="simCustomer()">+ Test</button></div><div id="cl"></div></div><div class="card" id="chat"></div></div>`;drawList('');drawChat()}
+function drawList(q=''){const c=conv();$('#cl').innerHTML=D().convs.filter(x=>(x.name+x.phone).toLowerCase().includes(q.toLowerCase())).map(x=>{const l=x.msgs.filter(m=>m.d!=='sys').pop()||{};
+ return `<div class="ci ${x.id===c.id?'on':''}" onclick="S.conv='${x.id}';vInbox($('#view'))"><div class="av">${ini(x.name)}</div><div class="cm"><b>${esc(x.name)}</b><span>${esc((l.text||'').slice(0,38))}</span></div><div class="cr"><small>${l.t||''}</small>${x.unread?`<i class="bd">${x.unread}</i>`:''}</div></div>`}).join('')}
+const bubble=(m,i)=>m.d==='sys'?`<div class="sys">${esc(m.text)}</div>`:`<div class="b ${m.d}">${m.head?`<b>${esc(m.head)}</b>`:''}<p>${esc(m.text).replace(/\n/g,'<br>')}</p>${m.foot?`<small>${esc(m.foot)}</small>`:''}<em>${m.t}${m.d==='out'?' ✓✓':''}</em>${(m.btns||[]).map((b,j)=>`<button class="mb" onclick="clickBtn(${i},${j})">${b.type==='URL'?'↗':b.type==='FORM'?'☰':'↩'} ${esc(b.text)}</button>`).join('')}</div>`;
+function drawChat(){const d=D(),c=conv();
+ $('#chat').innerHTML=`<div class="chh"><div class="av">${ini(c.name)}</div><div><b>${esc(c.name)}</b><small>${c.phone} · via ${N().phone}</small></div><span class="pill">${esc(c.tag)}</span></div>
+ <div class="msgs" id="ms">${c.msgs.map(bubble).join('')}</div>
+ <div class="comp"><select onchange="sendTpl(this.value);this.value=''"><option value="">+ Template</option>${d.tpls.filter(t=>t.status==='APPROVED').map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}</select>
+ <select onchange="sendForm(this.value);this.value=''"><option value="">+ Form</option>${d.forms.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('')}</select>
+ <input id="mi" placeholder="Type a message" onkeydown="if(event.key==='Enter')sendTxt()"><button class="btn" onclick="sendTxt()">Send</button></div>
+ <div class="sim"><b>Customer simulator</b><input id="si" placeholder="Type as the customer, e.g. hi" onkeydown="if(event.key==='Enter')simIn()"><button class="btn ghost sm" onclick="simIn()">Send as customer</button></div>`;
+ const m=$('#ms');m.scrollTop=m.scrollHeight}
+function push(c,m){c.msgs.push(m);if(view==='inbox'&&conv().id===c.id){drawChat();drawList()}}
+function simCustomer(){const d=D(),used=d.convs.map(c=>c.phone),p=people.find(x=>!used.includes(x[1]))||people[0];
+ const c={id:uid(),name:p[0],phone:p[1],tag:'New lead',unread:0,msgs:[]};d.convs.unshift(c);S.conv=c.id;view='inbox';render();addIn(c,'Hi','text');fire('keyword','Hi',c)}
+function sendTxt(){const i=$('#mi'),t=i.value.trim();if(!t)return;push(conv(),{d:'out',text:t,t:tm()})}
+function sendTpl(id){if(!id)return;const c=conv();push(c,tplMsg(D().tpls.find(t=>t.id===id),c))}
+function sendForm(id){if(!id)return;const f=D().forms.find(x=>x.id===id);push(conv(),{d:'out',text:'Please fill in this form: '+f.name,btns:[{type:'FORM',text:'Open form',fid:id}],t:tm()})}
+function addIn(c,text,kind,extra){push(c,{d:'in',text,t:tm()});captureLead(c,text,kind,extra);
+ log('messages',{contacts:[{profile:{name:c.name},wa_id:c.phone.replace(/\D/g,'')}],messages:[kind==='button'?{from:c.phone.replace(/\D/g,''),type:'button',button:{text,payload:text}}:{from:c.phone.replace(/\D/g,''),type:'text',text:{body:text}}]})}
+function simIn(){const i=$('#si'),t=i.value.trim();if(!t)return;const c=conv();addIn(c,t,'text');fire('keyword',t,c)}
+function clickBtn(i,j){const c=conv(),b=c.msgs[i].btns[j];
+ if(b.type==='URL')return toast('Opens '+b.url);
+ if(b.type==='FORM')return fillForm(b.fid);
+ addIn(c,b.text,'button');fire('button',b.text,c)}
+function fillForm(fid){const f=D().forms.find(x=>x.id===fid);
+ modal(`<div class="mh"><b>${esc(f.name)}</b><button onclick="closeM()">✕</button></div><div class="mbd one"><div>${f.fields.map((x,i)=>`<label class="f">${esc(x.label)}</label>${x.type==='select'?`<select id="ff${i}">${CITIES.map(c=>`<option>${c}</option>`).join('')}</select>`:`<input id="ff${i}" type="${x.type==='phone'?'tel':x.type}">`}`).join('')}</div></div><div class="mf"><button class="btn ghost" onclick="closeM()">Cancel</button><button class="btn" onclick="submitForm('${fid}')">Submit as customer</button></div>`)}
+function submitForm(fid){const f=D().forms.find(x=>x.id===fid),c=conv();
+ const fields=f.fields.map((x,i)=>({label:x.label,value:$('#ff'+i).value||'–'})),txt='Form submitted – '+fields.map(x=>x.label+': '+x.value).join(', ');closeM();f.subs++;addIn(c,txt,'form',{form:f.name,fields});
+ log('messages',{messages:[{type:'interactive',interactive:{type:'nfm_reply',nfm_reply:{name:f.name}}}]});fire('form',fid,c)}
+function fire(kind,val,c,id=cur){D(id).flows.filter(f=>f.on&&f.trg.type===kind&&(kind==='form'?(f.trg.value==='any'||f.trg.value===val):kind==='button'?f.trg.value.toLowerCase()===val.toLowerCase():val.toLowerCase().includes(f.trg.value.toLowerCase()))).forEach(f=>run(f,c,id))}
+function run(f,c,id){f.runs++;push(c,{d:'sys',text:'⚡ Automation “'+f.name+'” started'});
+ f.steps.forEach((s,i)=>setTimeout(()=>{if(!DATA[id])return;const d=D(id);
+  if(s.type==='template'){const t=d.tpls.find(x=>x.id===s.v);if(t)push(c,tplMsg(t,c))}
+  else if(s.type==='text')push(c,{d:'out',text:s.v,t:tm()});
+  else if(s.type==='form'){const fm=d.forms.find(x=>x.id===s.v);if(fm)push(c,{d:'out',text:'Please fill in this form: '+fm.name,btns:[{type:'FORM',text:'Open form',fid:fm.id}],t:tm()})}
+  else if(s.type==='tag'){c.tag=s.v;const l=findLead(c,id);if(l)l.tag=s.v;push(c,{d:'sys',text:'Tag added: '+s.v})}
+  else if(s.type==='delay')push(c,{d:'sys',text:'⏱ Waited '+s.v+' min (skipped in demo)'});
+  else if(s.type==='assign'){const l=findLead(c,id);if(l)l.assigned=s.v;push(c,{d:'sys',text:'Chat assigned to '+s.v})}
+ },(i+1)*700))}
+
+/* ---------- templates ---------- */
+function vTpl(v){const d=D();
+ v.innerHTML=`<div class="row"><div><b>${d.tpls.length} templates</b><br><small>Create templates, submit to Meta for approval, then use them in chats and automations.</small></div><button class="btn" onclick="editTpl()">+ New template</button></div><div class="grid">${d.tpls.map(t=>`<div class="card" onclick="editTpl('${t.id}')"><div class="row"><b>${esc(t.name)}</b><span class="pill ${t.status==='APPROVED'?'ok':'wait'}">${t.status}</span></div><small>${t.cat} · ${t.lang}</small><p style="margin:10px 0;color:var(--text-h)">${esc(t.body.slice(0,110))}</p>${t.btns.map(b=>`<span class="pill" style="margin-right:4px">${esc(b.text)}</span>`).join('')}</div>`).join('')}</div>`}
+function editTpl(id){const t=id?D().tpls.find(x=>x.id===id):null;
+ T=t?JSON.parse(JSON.stringify(t)):{id:uid(),name:'',cat:'MARKETING',lang:'en_IN',header:'',body:'',footer:'',btns:[],status:'DRAFT',isNew:1};
+ modal(`<div class="mh"><b>${t?'Edit':'Create'} template</b><button onclick="closeM()">✕</button></div><div class="mbd"><div>
+ <label class="f">Template name</label><input value="${esc(T.name)}" placeholder="order_update" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'_');T.name=this.value">
+ <div class="two"><div><label class="f">Category</label><select onchange="T.cat=this.value">${['MARKETING','UTILITY','AUTHENTICATION'].map(x=>`<option ${x===T.cat?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label class="f">Language</label><select onchange="T.lang=this.value">${['en_IN','hi','en_US','ta','te','mr'].map(x=>`<option ${x===T.lang?'selected':''}>${x}</option>`).join('')}</select></div></div>
+ <label class="f">Header (optional)</label><input value="${esc(T.header)}" oninput="T.header=this.value;pv()">
+ <label class="f">Body – use {{1}} for the customer's first name</label><textarea oninput="T.body=this.value;pv()">${esc(T.body)}</textarea>
+ <label class="f">Footer (optional)</label><input value="${esc(T.footer)}" oninput="T.footer=this.value;pv()">
+ <label class="f">Buttons (max 3)</label><div id="bl"></div><div class="br"><button class="btn ghost sm" onclick="addB('QUICK')">+ Quick reply</button><button class="btn ghost sm" onclick="addB('URL')">+ Website link</button></div>
+ </div><div><div class="phone" id="pv"></div></div></div>
+ <div class="mf">${t?'<button class="btn del" style="margin-right:auto" onclick="delTpl()">Delete</button>':''}<button class="btn ghost" onclick="closeM()">Cancel</button><button class="btn" onclick="saveTpl()">Submit for approval</button></div>`);pv();bl()}
+function pv(){$('#pv').innerHTML=`<div class="b out" style="max-width:100%;align-self:auto">${T.header?`<b>${esc(T.header)}</b>`:''}<p>${esc(T.body||'Your message preview appears here').replace(/\{\{1\}\}/g,'Aarav').replace(/\n/g,'<br>')}</p>${T.footer?`<small>${esc(T.footer)}</small>`:''}<em>${tm()}</em>${T.btns.map(b=>`<div class="mb">${b.type==='URL'?'↗':'↩'} ${esc(b.text||'Button')}</div>`).join('')}</div>`}
+function bl(){$('#bl').innerHTML=T.btns.map((b,i)=>`<div class="br"><input value="${esc(b.text)}" placeholder="${b.type==='URL'?'Label':'Reply text'}" oninput="T.btns[${i}].text=this.value;pv()">${b.type==='URL'?`<input value="${esc(b.url||'')}" placeholder="https://" oninput="T.btns[${i}].url=this.value">`:''}<button class="btn del sm" onclick="T.btns.splice(${i},1);bl();pv()">✕</button></div>`).join('')}
+function addB(type){if(T.btns.length>=3)return toast('WhatsApp allows up to 3 buttons');T.btns.push({type,text:'',url:''});bl();pv()}
+function saveTpl(){if(!T.name||!T.body)return toast('Name and body are required');T.btns=T.btns.filter(b=>b.text);const d=D(),id=cur;T.status='PENDING';delete T.isNew;
+ const i=d.tpls.findIndex(x=>x.id===T.id);i<0?d.tpls.push(T):d.tpls[i]=T;const tid=T.id;closeM();render();toast('Submitted to Meta for review');
+ setTimeout(()=>{const t=D(id)?.tpls.find(x=>x.id===tid);if(t){t.status='APPROVED';log('message_template_status_update',{event:'APPROVED',message_template_name:t.name,message_template_language:t.lang},id);if(view==='tpl'&&cur===id)render();toast('Template “'+t.name+'” approved')}},2500)}
+
+function delTpl(){D().tpls=D().tpls.filter(x=>x.id!==T.id);closeM();render();toast('Template deleted')}
+
+/* ---------- forms ---------- */
+function vForms(v){const d=D();
+ v.innerHTML=`<div class="row"><div><b>${d.forms.length} forms</b><br><small>Send a form from any chat. Customer answers can start an automation.</small></div><button class="btn" onclick="editForm()">+ New form</button></div><div class="grid">${d.forms.map(f=>`<div class="card" onclick="editForm('${f.id}')"><div class="row"><b>${esc(f.name)}</b><span class="pill">${f.subs} submissions</span></div><small>${f.fields.length} fields</small><p style="margin-top:8px">${f.fields.map(x=>esc(x.label)).join(' · ')}</p></div>`).join('')}</div>`}
+function editForm(id){const f=id?D().forms.find(x=>x.id===id):null;F=f?JSON.parse(JSON.stringify(f)):{id:uid(),name:'',fields:[{label:'Full name',type:'text'}],subs:0,isNew:1};
+ modal(`<div class="mh"><b>${f?'Edit':'Create'} form</b><button onclick="closeM()">✕</button></div><div class="mbd"><div><label class="f">Form name</label><input value="${esc(F.name)}" oninput="F.name=this.value"><label class="f">Fields</label><div id="fl"></div><div class="br"><button class="btn ghost sm" onclick="F.fields.push({label:'',type:'text'});fld()">+ Add field</button></div></div><div><div class="phone" id="fp"></div></div></div><div class="mf">${f?`<button class="btn del" style="margin-right:auto" onclick="delForm()">Delete</button>`:''}<button class="btn ghost" onclick="closeM()">Cancel</button><button class="btn" onclick="saveForm()">Save form</button></div>`);fld()}
+function fld(){$('#fl').innerHTML=F.fields.map((x,i)=>`<div class="br"><input value="${esc(x.label)}" placeholder="Field label" oninput="F.fields[${i}].label=this.value;fld2()"><select style="width:120px" onchange="F.fields[${i}].type=this.value;fld2()">${['text','email','phone','number','date','select'].map(t=>`<option ${t===x.type?'selected':''}>${t}</option>`).join('')}</select><button class="btn del sm" onclick="F.fields.splice(${i},1);fld()">✕</button></div>`).join('');fld2()}
+function fld2(){$('#fp').innerHTML=`<b>${esc(F.name||'Form preview')}</b>`+F.fields.map(x=>`<label class="f">${esc(x.label||'Untitled')}</label><input disabled placeholder="${x.type==='select'?'Choose city…':x.type}">`).join('')}
+function saveForm(){if(!F.name)return toast('Give the form a name');F.fields=F.fields.filter(x=>x.label);const d=D(),i=d.forms.findIndex(x=>x.id===F.id);delete F.isNew;i<0?d.forms.push(F):d.forms[i]=F;closeM();render();toast('Form saved')}
+function delForm(){D().forms=D().forms.filter(x=>x.id!==F.id);closeM();render();toast('Form deleted')}
+
+/* ---------- automation ---------- */
+const STEPS={template:'Send template',text:'Send message',form:'Send form',tag:'Add tag',delay:'Wait',assign:'Assign agent'};
+const trgLabel=f=>({button:'Button click',keyword:'Keyword',form:'Form submitted'})[f.trg.type]+(f.trg.type==='form'?'':': '+f.trg.value);
+const opts=(arr,sel,k='id',l='name')=>arr.map(x=>`<option value="${x[k]}" ${x[k]===sel?'selected':''}>${esc(x[l])}</option>`).join('');
+function vFlows(v){const d=D();let f=fl()||d.flows[0];S.flow=f?.id;
+ v.innerHTML=`<div class="split"><div class="card"><div class="row"><b>Flows</b><button class="btn sm" onclick="newFlow()">+ New</button></div>${d.flows.map(x=>`<div class="fi ${x===f?'on':''}" onclick="S.flow='${x.id}';render()"><b>${esc(x.name)}</b><small>${trgLabel(x)}</small><small>${x.steps.length} steps · ${x.runs} runs</small><label class="sw"><input type="checkbox" ${x.on?'checked':''} onclick="event.stopPropagation();fl2('${x.id}')"><span></span></label></div>`).join('')}</div><div class="card" style="background:var(--bg-base)">${f?flowEd(f):'<p>Create your first flow.</p>'}</div></div>`}
+function fl2(id){const f=D().flows.find(x=>x.id===id);f.on=!f.on;toast(f.name+(f.on?' is live':' paused'))}
+function flowEd(f){const d=D();const btnTexts=[...new Set(d.tpls.flatMap(t=>t.btns.filter(b=>b.type==='QUICK').map(b=>b.text)))];
+ const tv=f.trg.type==='button'?`<input list="bt" value="${esc(f.trg.value)}" oninput="fl().trg.value=this.value"><datalist id="bt">${btnTexts.map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`:f.trg.type==='keyword'?`<input value="${esc(f.trg.value)}" placeholder="e.g. hi, price" oninput="fl().trg.value=this.value">`:`<select onchange="fl().trg.value=this.value"><option value="any">Any form</option>${opts(d.forms,f.trg.value)}</select>`;
+ return `<div class="row"><input style="max-width:300px;font-weight:600" value="${esc(f.name)}" oninput="fl().name=this.value"><div style="display:flex;gap:8px"><button class="btn ghost sm" onclick="testFlow()">▶ Test on current chat</button><button class="btn del sm" onclick="delFlow()">Delete</button></div></div>
+ <div class="node t"><h4>When this happens <span class="pill">Trigger</span></h4><div class="two"><select onchange="fl().trg={type:this.value,value:this.value==='form'?'any':''};render()">${[['button','Customer clicks a button'],['keyword','Customer sends a keyword'],['form','Customer submits a form']].map(([k,l])=>`<option value="${k}" ${f.trg.type===k?'selected':''}>${l}</option>`).join('')}</select>${tv}</div></div>`
+ +f.steps.map((s,i)=>`<div class="cn"></div><div class="node"><h4>${STEPS[s.type]}<button class="btn del sm" onclick="fl().steps.splice(${i},1);render()">✕</button></h4>${
+  s.type==='template'?`<select onchange="fl().steps[${i}].v=this.value">${opts(d.tpls.filter(t=>t.status==='APPROVED'),s.v)}</select>`:
+  s.type==='form'?`<select onchange="fl().steps[${i}].v=this.value">${opts(d.forms,s.v)}</select>`:
+  s.type==='assign'?`<select onchange="fl().steps[${i}].v=this.value">${AGENTS.map(a=>`<option ${a===s.v?'selected':''}>${a}</option>`).join('')}</select>`:
+  s.type==='text'?`<textarea oninput="fl().steps[${i}].v=this.value">${esc(s.v)}</textarea>`:
+  `<input value="${esc(s.v)}" ${s.type==='delay'?'type="number" min="1"':''} placeholder="${s.type==='delay'?'Minutes':'Tag name'}" oninput="fl().steps[${i}].v=this.value">`}</div>`).join('')
+ +`<div class="cn"></div><div class="adds">${Object.entries(STEPS).map(([k,l])=>`<button class="btn ghost sm" onclick="addStep('${k}')">+ ${l}</button>`).join('')}</div>`}
+function addStep(t){const d=D();fl().steps.push({type:t,v:t==='template'?d.tpls[0]?.id:t==='form'?d.forms[0]?.id:t==='assign'?AGENTS[0]:t==='delay'?'5':''});render()}
+function newFlow(){const f={id:uid(),name:'Untitled flow',on:false,runs:0,trg:{type:'button',value:''},steps:[]};D().flows.push(f);S.flow=f.id;render()}
+function delFlow(){D().flows=D().flows.filter(x=>x.id!==S.flow);S.flow=null;render()}
+function testFlow(){const c=conv(),f=fl();if(!c)return toast('Open the inbox and simulate a customer first');if(!f.steps.length)return toast('Add at least one step');view='inbox';S.conv=c.id;render();run(f,c,cur);toast('Running “'+f.name+'” on '+c.name)}
+
+/* ---------- settings ---------- */
+function vNums(v){
+ v.innerHTML=`<div class="row"><div><b>${NUMS.length} WhatsApp number${NUMS.length>1?'s':''}</b><br><small>Each number has its own inbox, templates, forms, automations and webhook.</small></div><button class="btn" onclick="addNum()">+ Add number</button></div>
+ <div class="card" style="padding:0;overflow:auto"><table><thead><tr><th>Number</th><th>Business account ID</th><th>Phone number ID</th><th>Status</th><th>Chats</th><th></th></tr></thead><tbody>${NUMS.map(n=>{const d=D(n.id);
+ return `<tr><td><div style="display:flex;gap:10px;align-items:center"><div class="av" style="background:${n.color}">${esc(n.name[0]||'W')}</div><div><b>${esc(n.name)}</b><small style="display:block">${esc(n.phone)}</small></div></div></td><td>${esc(n.waba||'–')}</td><td>${esc(n.pid||'–')}</td><td><span class="pill ${d.cfg.ok?'ok':'wait'}">${d.cfg.ok?'Connected':'Not verified'}</span></td><td>${d.convs.length}</td><td style="text-align:right;white-space:nowrap"><button class="btn ghost sm" onclick="openInbox('${n.id}')">Open inbox</button> <button class="btn del sm" onclick="delNum('${n.id}')">Remove</button></td></tr>`}).join('')}</tbody></table></div>`}
+function addNum(){modal(`<div class="mh"><b>Add WhatsApp number</b><button onclick="closeM()">✕</button></div><div class="mbd one"><div><label class="f">Display name</label><input id="an" placeholder="e.g. Orders Desk"><label class="f">WhatsApp phone number</label><input id="ap" placeholder="+91 98XXX XXXXX"><div class="two"><div><label class="f">Business account ID</label><input id="aw" placeholder="WABA ID"></div><div><label class="f">Phone number ID</label><input id="ai" placeholder="From Meta API setup"></div></div><label class="f">Permanent access token</label><input id="at" type="password" placeholder="EAAG…"><small style="display:block;margin-top:8px">You can change these later under API & webhooks.</small></div></div><div class="mf"><button class="btn ghost" onclick="closeM()">Cancel</button><button class="btn" onclick="saveNum()">Add number</button></div>`)}
+function saveNum(){const name=$('#an').value.trim(),phone=$('#ap').value.trim(),dg=phone.replace(/\D/g,'');
+ if(!name||dg.length<10)return toast('Enter a name and a valid phone number');
+ if(NUMS.some(x=>x.phone.replace(/\D/g,'')===dg))return toast('This number is already added');
+ const n={id:'n'+uid(),name,phone,waba:$('#aw').value.trim(),pid:$('#ai').value.trim(),color:COLORS[NUMS.length%COLORS.length]};NUMS.push(n);
+ DATA[n.id]={tpls:[],forms:[],flows:[],convs:[],logs:[],cfg:{appId:'',token:$('#at').value.trim(),ver:'v21.0',vt:'wacrm_'+uid()+uid(),fields:{messages:1,message_template_status_update:1,message_deliveries:1,message_reads:1,messaging_handovers:0},ok:false}};
+ closeM();render();toast(name+' added')}
+function delNum(id){if(NUMS.length<2)return toast('Keep at least one number');const n=NUMS.find(x=>x.id===id),d=D(id);
+ modal(`<div class="mh"><b>Remove ${esc(n.phone)}?</b><button onclick="closeM()">✕</button></div><div class="mbd one"><p>This removes “${esc(n.name)}” with its ${d.convs.length} chats, ${d.tpls.length} templates, ${d.forms.length} forms and ${d.flows.length} automations from this CRM. This can’t be undone.</p></div><div class="mf"><button class="btn ghost" onclick="closeM()">Cancel</button><button class="btn del" onclick="confirmDel('${id}')">Remove number</button></div>`)}
+function confirmDel(id){NUMS.splice(NUMS.findIndex(x=>x.id===id),1);delete DATA[id];LEADS=LEADS.filter(l=>l.nid!==id);if(LF.nid===id)LF.nid='all';if(cur===id){cur=NUMS[0].id;S={conv:null,flow:null}}closeM();render();toast('Number removed')}
+
+function vSet(v){const n=N(),c=D().cfg,url=`https://crm.yourdomain.in/api/webhooks/whatsapp/${n.id}`;
+ v.innerHTML=`<div class="stats"><div class="card"><small>Phone number</small><b>${n.phone}</b></div><div class="card"><small>Quality rating</small><b>High</b></div><div class="card"><small>Messaging limit</small><b>1K / 24h</b></div><div class="card"><small>Status</small><b>${c.ok?'Connected':'Not verified'}</b></div></div>
+ <div class="two" style="align-items:start"><div class="card"><div class="row"><b>Meta Cloud API</b><span class="pill ok">${c.ver}</span></div>
+ <label class="f">App ID</label><input value="${c.appId}" oninput="D().cfg.appId=this.value">
+ <label class="f">WhatsApp Business Account ID</label><input value="${n.waba}" oninput="N().waba=this.value">
+ <label class="f">Phone number ID</label><input value="${n.pid}" oninput="N().pid=this.value">
+ <label class="f">Permanent access token</label><div class="br"><input id="tk" type="password" value="${c.token}" oninput="D().cfg.token=this.value"><button class="btn ghost sm" onclick="const e=$('#tk');e.type=e.type==='password'?'text':'password'">Show</button></div>
+ <label class="f">Graph API version</label><select onchange="D().cfg.ver=this.value">${['v21.0','v20.0','v19.0'].map(x=>`<option ${x===c.ver?'selected':''}>${x}</option>`).join('')}</select>
+ <div class="br" style="margin-top:14px"><button class="btn" onclick="D().cfg.ok=true;render();toast('Credentials verified with Meta (demo)')">Verify & save</button></div></div>
+ <div class="card"><div class="row"><b>Webhook</b><span class="pill ok">Subscribed</span></div>
+ <label class="f">Callback URL</label><div class="br"><input readonly value="${url}"><button class="btn ghost sm" onclick="navigator.clipboard?.writeText('${url}');toast('Copied')">Copy</button></div>
+ <label class="f">Verify token</label><div class="br"><input value="${c.vt}" oninput="D().cfg.vt=this.value"><button class="btn ghost sm" onclick="D().cfg.vt='wacrm_'+uid()+uid();render()">New</button></div>
+ <label class="f">Webhook fields</label>${Object.keys(c.fields).map(k=>`<label style="display:flex;gap:8px;align-items:center;margin:5px 0"><input type="checkbox" style="width:auto" ${c.fields[k]?'checked':''} onchange="D().cfg.fields['${k}']=this.checked"> ${k}</label>`).join('')}
+ <div class="br" style="margin-top:12px"><button class="btn" onclick="testHook()">Send test event</button></div>
+ <small style="display:block;margin-top:8px">Paste the callback URL and verify token into Meta App Dashboard → WhatsApp → Configuration.</small></div></div>
+ <div class="card" style="margin-top:var(--gap)"><b>Recent webhook events</b>${D().logs.length?D().logs.map(l=>`<details><summary>${l.t} · ${l.field}</summary><pre>${esc(JSON.stringify(l.body,null,2))}</pre></details>`).join(''):'<p style="margin-top:8px">No events yet. Send a test event or chat as a customer in the Inbox.</p>'}</div>`}
+function testHook(){log('messages',{contacts:[{profile:{name:'Test User'},wa_id:'919999900000'}],messages:[{from:'919999900000',type:'text',text:{body:'Webhook test'}}]});render();toast('Test event delivered (200 OK)')}
+render();
+</script></body></html>
